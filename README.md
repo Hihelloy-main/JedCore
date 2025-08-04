@@ -5,7 +5,7 @@
 # JedCore
 This is my fork of Cozymc's fork of plushmonkey's fork of jedk1's JedCore addon for ProjectKorra.  
 Download releases [here](https://github.com/Hihelloy-main/JedCore/releases).
-Join our [Discord]() to discuss the plugin, suggest changes, report bugs, etc (new Discord soon).
+Join our [Discord](https://discord.gg/gh9MfDmwZm) to discuss the plugin, suggest changes, report bugs, etc.
 
 ## Changelog
 
