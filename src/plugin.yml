@@ -2,10 +2,14 @@ name: JedCore
 main: com.jedk1.jedcore.JedCore
 version: ${project.version}
 authors: ['jedk1']
-depend: ['ProjectKorra']
-api-version: 1.20
+depend: [ProjectKorra]
+folia-supported: true
+api-version: '1.20'
+load: POSTWORLD
+description: "A cool ProjectKorra addon plugin"
+
 permissions:
-  #OP permissions
+  # OP permissions
   jedcore.admin:
     default: op
     description: Access to abilities and commands.
@@ -25,17 +29,20 @@ permissions:
       bending.ability.ElementSphere.Stream: true
       bending.ability.Maelstrom: true
       bending.ability.SpiritBeam: true
-  #Player Permissions
+
+  # Player Permissions
   jedcore.commands:
     default: true
     description: Access to player commands.
     children:
       bending.command.jedcore: true
+
   jedcore.passive:
     default: true
     description: Access to passive abilities.
     children:
       bending.ability.WallRun: true
+
   jedcore.air:
     default: true
     description: Access to air abilities.
@@ -47,6 +54,7 @@ permissions:
       bending.ability.Meditate: true
       bending.ability.SonicBlast: true
       bending.ability.AirSlam: true
+
   jedcore.water:
     default: true
     description: Access to water abilities.
@@ -59,6 +67,7 @@ permissions:
       bending.ability.WakeFishing: true
       bending.ability.WaterFlow: true
       bending.ability.WaterGimbal: true
+
   jedcore.earth:
     default: true
     description: Access to earth abilities.
@@ -78,6 +87,7 @@ permissions:
       bending.ability.MudSurge: true
       bending.ability.SandBlast: true
       bending.ability.MagmaBlast: true
+
   jedcore.fire:
     default: true
     description: Access to fire abilities.
@@ -90,6 +100,7 @@ permissions:
       bending.ability.FirePunch: true
       bending.ability.FireShots: true
       bending.ability.LightningBurst: true
+
   jedcore.chi:
     default: true
     description: Access to chi abilities.
