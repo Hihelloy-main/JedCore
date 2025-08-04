@@ -1,5 +1,5 @@
-[![GitHub Pre-Release](https://img.shields.io/github/release-pre/Hihelloy-main/JedCore.svg)](https://github.com/CozmycDev/JedCore/releases)
-[![Github All Releases](https://img.shields.io/github/downloads/Hihelloy-main/JedCore/total.svg)](https://github.com/CozmycDev/JedCore/releases)
+[![GitHub Pre-Release](https://img.shields.io/github/release-pre/Hihelloy-main/JedCore.svg)](https://github.com/Hihelloy-main/JedCore/releases)
+[![Github All Releases](https://img.shields.io/github/downloads/Hihelloy-main/JedCore/total.svg)](https://github.com/Hihelloy-main/JedCore/releases)
 ![Size](https://img.shields.io/github/repo-size/Hihelloy-main/JedCore.svg)
 
 # JedCore
