@@ -14,11 +14,9 @@ import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class AirBlade extends AirAbility implements AddonAbility {
 
@@ -72,8 +70,9 @@ public class AirBlade extends AirAbility implements AddonAbility {
         speed = config.getDouble("Abilities.Air.AirBlade.Speed");
         knockback = config.getDouble("Abilities.Air.AirBlade.Knockback");
 
-        ConfigurationSection cuttingConfig = config.getConfigurationSection("Abilities.Air.AirBlade.BlockCutting");
+       @NotNull ConfigurationSection cuttingConfig = Objects.requireNonNull(config.getConfigurationSection("Abilities.Air.AirBlade.BlockCutting"));
 
+        assert cuttingConfig != null;
         blockCuttingEnabled = cuttingConfig.getBoolean("Enabled");
         revertCutBlocks = cuttingConfig.getBoolean("Revert");
         revertTime = cuttingConfig.getLong("RevertTime");

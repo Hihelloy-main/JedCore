@@ -1,36 +1,34 @@
 package com.jedk1.jedcore.ability.earthbending;
 
-import com.jedk1.jedcore.JedCore;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import com.jedk1.jedcore.collision.AABB;
 import com.jedk1.jedcore.collision.CollisionDetector;
 import com.jedk1.jedcore.collision.CollisionUtil;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.BlockUtil;
-import com.projectkorra.projectkorra.GeneralMethods;
-import com.projectkorra.projectkorra.ability.AddonAbility;
-import com.projectkorra.projectkorra.ability.EarthAbility;
 import com.projectkorra.projectkorra.ability.util.Collision;
 import com.projectkorra.projectkorra.attribute.Attribute;
 import com.projectkorra.projectkorra.earthbending.passive.DensityShift;
-import com.projectkorra.projectkorra.util.DamageHandler;
-import com.projectkorra.projectkorra.util.ParticleEffect;
-import com.projectkorra.projectkorra.util.TempBlock;
 import com.projectkorra.projectkorra.util.TempFallingBlock;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.jedk1.jedcore.JedCore;
+import com.projectkorra.projectkorra.GeneralMethods;
+import com.projectkorra.projectkorra.ability.AddonAbility;
+import com.projectkorra.projectkorra.ability.EarthAbility;
+import com.projectkorra.projectkorra.util.DamageHandler;
+import com.projectkorra.projectkorra.util.ParticleEffect;
+import com.projectkorra.projectkorra.util.TempBlock;
 
 public class EarthShard extends EarthAbility implements AddonAbility {
     @Attribute(Attribute.RANGE)
@@ -55,14 +53,6 @@ public class EarthShard extends EarthAbility implements AddonAbility {
     private final List<TempBlock> tblockTracker = new ArrayList<>();
     private final List<TempBlock> readyBlocksTracker = new ArrayList<>();
     private final List<TempFallingBlock> fallingBlocks = new ArrayList<>();
-
-    private boolean allowKnockup;
-    private double knockupVelocity;
-    private double knockupRange;
-
-    private boolean allowKnockupSelf;
-    private double knockupSelfVelocity;
-    private double knockupSelfRange;
 
     public EarthShard(Player player) {
         super(player);
@@ -102,12 +92,6 @@ public class EarthShard extends EarthAbility implements AddonAbility {
         cooldown = config.getLong("Abilities.Earth.EarthShard.Cooldown");
         abilityCollisionRadius = config.getDouble("Abilities.Earth.EarthShard.AbilityCollisionRadius");
         entityCollisionRadius = config.getDouble("Abilities.Earth.EarthShard.EntityCollisionRadius");
-        allowKnockup = config.getBoolean("Abilities.Earth.EarthShard.KnockUp.Others.Allow");
-        knockupVelocity = config.getDouble("Abilities.Earth.EarthShard.KnockUp.Others.Velocity");
-        knockupRange = config.getDouble("Abilities.Earth.EarthShard.KnockUp.Others.Range");
-        allowKnockupSelf = config.getBoolean("Abilities.Earth.EarthShard.KnockUp.Self.Allow");
-        knockupSelfVelocity = config.getDouble("Abilities.Earth.EarthShard.KnockUp.Self.Velocity");
-        knockupSelfRange = config.getDouble("Abilities.Earth.EarthShard.KnockUp.Self.Range");
     }
 
     public void select() {
@@ -115,68 +99,53 @@ public class EarthShard extends EarthAbility implements AddonAbility {
     }
 
     public void raiseEarthBlock(Block block) {
-        if (block == null) return;
-        if (EarthAbility.getMovedEarth().containsKey(block)) return;
-        if (tblockTracker.size() >= maxShards) return;
+        if (block == null) {
+            return;
+        }
+
+        if (tblockTracker.size() >= maxShards) {
+            return;
+        }
 
         Vector blockVector = block.getLocation().toVector().toBlockVector().setY(0);
 
+        // Don't select from locations that already have an EarthShard block.
         for (TempBlock tempBlock : tblockTracker) {
-            if (tempBlock.getLocation().getWorld() != block.getWorld()) continue;
+            if (tempBlock.getLocation().getWorld() != block.getWorld()) {
+                continue;
+            }
 
             Vector tempBlockVector = tempBlock.getLocation().toVector().toBlockVector().setY(0);
-            if (tempBlockVector.equals(blockVector)) return;
+
+            if (tempBlockVector.equals(blockVector)) {
+                return;
+            }
         }
 
         for (int i = 1; i < 4; i++) {
-            if (!isTransparent(block.getRelative(BlockFace.UP, i))) return;
-        }
-
-        if (!isEarthbendable(block)) return;
-
-        if (isMetal(block)) {
-            playMetalbendingSound(block.getLocation());
-        } else {
-            ParticleEffect.BLOCK_CRACK.display(
-                    block.getLocation().add(0, 1, 0), 20, 0.0, 0.0, 0.0, 0.0, block.getBlockData()
-            );
-            playEarthbendingSound(block.getLocation());
-        }
-
-        Material material = getCorrectType(block);
-
-        if (DensityShift.isPassiveSand(block)) {
-            DensityShift.revertSand(block);
-        }
-
-        Location loc = block.getLocation().add(0.5, 0, 0.5);
-        new TempFallingBlock(loc, material.createBlockData(), new Vector(0, 0.8, 0), this);
-        TempBlock tb = new TempBlock(block, Material.AIR.createBlockData());
-        tblockTracker.add(tb);
-
-        handleKnockup(block);
-    }
-
-    private void handleKnockup(Block origin) {
-        if (!allowKnockup && !allowKnockupSelf) return;
-
-        Location originLoc = origin.getLocation();
-        World world = origin.getWorld();
-
-        for (Entity entity : world.getNearbyEntities(originLoc, Math.max(knockupRange, knockupSelfRange), knockupRange, knockupRange)) {
-            if (entity instanceof FallingBlock) continue;
-
-            if (entity.equals(player)) {
-                if (!allowKnockupSelf) continue;
-                if (entity.getLocation().distance(originLoc) <= knockupSelfRange) {
-                    entity.setVelocity(entity.getVelocity().add(new Vector(0, knockupSelfVelocity, 0)));
-                }
-            } else {
-                if (!allowKnockup) continue;
-                if (entity.getLocation().distance(originLoc) <= knockupRange) {
-                    entity.setVelocity(entity.getVelocity().add(new Vector(0, knockupVelocity, 0)));
-                }
+            if (!isTransparent(block.getRelative(BlockFace.UP, i))) {
+                return;
             }
+        }
+
+        if (isEarthbendable(block)) {
+            if (isMetal(block)) {
+                playMetalbendingSound(block.getLocation());
+            } else {
+                ParticleEffect.BLOCK_CRACK.display(block.getLocation().add(0, 1, 0), 20, 0.0, 0.0, 0.0, 0.0, block.getBlockData());
+                playEarthbendingSound(block.getLocation());
+            }
+
+            Material material = getCorrectType(block);
+
+            if (DensityShift.isPassiveSand(block)) {
+                DensityShift.revertSand(block);
+            }
+
+            Location loc = block.getLocation().add(0.5, 0, 0.5);
+            new TempFallingBlock(loc, material.createBlockData(), new Vector(0, 0.8, 0), this);
+            TempBlock tb = new TempBlock(block, Material.AIR.createBlockData());
+            tblockTracker.add(tb);
         }
     }
 
@@ -464,54 +433,6 @@ public class EarthShard extends EarthAbility implements AddonAbility {
 
     public List<TempFallingBlock> getFallingBlocks() {
         return fallingBlocks;
-    }
-
-    public boolean isAllowKnockup() {
-        return allowKnockup;
-    }
-
-    public void setAllowKnockup(boolean allowKnockup) {
-        this.allowKnockup = allowKnockup;
-    }
-
-    public double getKnockupVelocity() {
-        return knockupVelocity;
-    }
-
-    public void setKnockupVelocity(double knockupVelocity) {
-        this.knockupVelocity = knockupVelocity;
-    }
-
-    public double getKnockupRange() {
-        return knockupRange;
-    }
-
-    public void setKnockupRange(double knockupRange) {
-        this.knockupRange = knockupRange;
-    }
-
-    public boolean isAllowKnockupSelf() {
-        return allowKnockupSelf;
-    }
-
-    public void setAllowKnockupSelf(boolean allowKnockupSelf) {
-        this.allowKnockupSelf = allowKnockupSelf;
-    }
-
-    public double getKnockupSelfVelocity() {
-        return knockupSelfVelocity;
-    }
-
-    public void setKnockupSelfVelocity(double knockupSelfVelocity) {
-        this.knockupSelfVelocity = knockupSelfVelocity;
-    }
-
-    public double getKnockupSelfRange() {
-        return knockupSelfRange;
-    }
-
-    public void setKnockupSelfRange(double knockupSelfRange) {
-        this.knockupSelfRange = knockupSelfRange;
     }
 
     @Override
