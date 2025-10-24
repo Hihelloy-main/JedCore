@@ -211,7 +211,7 @@ public class ThreadUtil {
                 }
             }, delay * 50, TimeUnit.MILLISECONDS);
         } else {
-            return Bukkit.getScheduler().runTaskLater(plugin, runnable, delay);
+            return Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, runnable, delay);
         }
     }
 

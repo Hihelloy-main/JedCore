@@ -248,12 +248,13 @@ public class Maelstrom extends WaterAbility implements AddonAbility, ComboAbilit
 		return new Maelstrom(player);
 	}
 
-	@Override
-	public ArrayList<AbilityInformation> getCombination() {
-		return ComboUtil.generateCombinationFromList(this, JedCoreConfig.getConfig(player).getStringList("Abilities.Water.WaterCombo.Maelstrom.Combination"));
-	}
+    @Override
+    public ArrayList<AbilityInformation> getCombination() {
+        return ComboUtil.generateCombinationFromList(this, JedCoreConfig.getConfig(player).getStringList("Abilities.Water.WaterCombo.Maelstrom.Combination"));
+    }
 
-	@Override
+
+    @Override
 	public String getInstructions() {
 		return JedCoreConfig.getConfig(player).getString("Abilities.Water.WaterCombo.Maelstrom.Instructions");
 	}

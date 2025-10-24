@@ -5,6 +5,7 @@ authors: ['jedk1']
 depend: [ProjectKorra]
 folia-supported: true
 api-version: '1.20'
+load: POSTWORLD
 description: "A cool ProjectKorra addon plugin"
 
 permissions:

@@ -4,6 +4,7 @@ import com.jedk1.jedcore.JCMethods;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.projectkorra.projectkorra.BendingPlayer;
 import com.projectkorra.projectkorra.Element;
+import com.projectkorra.projectkorra.ability.ElementalAbility;
 import com.projectkorra.projectkorra.ability.IceAbility;
 import com.projectkorra.projectkorra.util.ParticleEffect;
 import org.bukkit.Bukkit;
@@ -41,7 +42,7 @@ public class IcePassive {
 			if (JCMethods.isDisabledWorld(player.getWorld())) continue;
 			if (!player.isOnGround()) continue;
 			if (!player.isSprinting()) continue;
-			if (!IceAbility.isIce(player.getLocation().getBlock().getRelative(BlockFace.DOWN))) continue;
+			if (!ElementalAbility.isIce(player.getLocation().getBlock().getRelative(BlockFace.DOWN))) continue;
 
 			BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 

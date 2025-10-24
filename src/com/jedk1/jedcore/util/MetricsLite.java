@@ -28,6 +28,7 @@
 
 package com.jedk1.jedcore.util;
 
+import com.cjcrafter.foliascheduler.bukkit.BukkitTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -35,7 +36,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.io.*;
 import java.lang.reflect.Method;
@@ -104,7 +104,7 @@ public class MetricsLite {
     /**
      * Id of the scheduled task
      */
-    private volatile BukkitTask task = null;
+    private volatile Object task = null;
 
     public MetricsLite(Plugin plugin) throws IOException {
         if (plugin == null) {
@@ -153,7 +153,7 @@ public class MetricsLite {
             }
 
             // Begin hitting the server with glorious data
-            task = (BukkitTask) ThreadUtil.runAsyncTimer(new Runnable() {
+            task = ThreadUtil.runAsyncTimer(new Runnable() {
 
                 private boolean firstPost = true;
 
@@ -163,7 +163,6 @@ public class MetricsLite {
                         synchronized (optOutLock) {
                             // Disable Task, if it is running and the server owner decided to opt-out
                             if (isOptOut() && task != null) {
-                                task.cancel();
                                 task = null;
                             }
                         }
@@ -245,7 +244,6 @@ public class MetricsLite {
 
             // Disable Task, if it is running
             if (task != null) {
-                task.cancel();
                 task = null;
             }
         }

@@ -20,7 +20,7 @@ public class JCManager implements Runnable {
         LightningBurst.progressAll();
 
         HealingWaters.heal(Bukkit.getServer());
-        IcePassive.handleSkating();
+        //IcePassive.handleSkating();
         IceWall.progressAll();
         EarthPillar.progressAll();
 

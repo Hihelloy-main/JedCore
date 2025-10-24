@@ -66,11 +66,11 @@ public class JedCore extends JavaPlugin {
 			luminol = true;
 		} catch (ClassNotFoundException ignored) {}
 
-		if (isFolia) {
+		if (isFolia && !luminol) {
 				getLogger().info("Server is running on Folia");
 		}
 
-		if (paper) {
+		if (paper && !luminol) {
 				getLogger().info("Server is running on Paper");
 		}
 
