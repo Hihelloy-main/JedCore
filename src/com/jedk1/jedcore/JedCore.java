@@ -66,12 +66,9 @@ public class JedCore extends JavaPlugin {
 			luminol = true;
 		} catch (ClassNotFoundException ignored) {}
 
-		if (isFolia && !luminol) {
-				getLogger().info("Server is running on Folia");
-		}
 
 		if (paper && !luminol) {
-				getLogger().info("Server is running on Paper");
+				getLogger().info("Server is running on Paper/Folia");
 		}
 
 		if (luminol) {
@@ -93,12 +90,15 @@ public class JedCore extends JavaPlugin {
 
 		// Repeating logic task - uses ThreadUtil
 		ThreadUtil.runGlobalTimer(new JCManager(this), 0L, 1L);
+        ThreadUtil.runGlobalTimer(RegenTempBlock::manage, 0L, 1L);
 
 		new Commands();
 		FireTick.loadMethod();
 
 		particleAdapter = new ParticleAdapterFactory().getAdapter();
 		potionEffectAdapter = new PotionEffectAdapterFactory().getAdapter();
+
+        checkMaintainer();
 
 		// Delayed combo/collision init
 		ThreadUtil.runGlobalLater(() -> {
@@ -115,6 +115,12 @@ public class JedCore extends JavaPlugin {
             log.info("Failed to submit statistics for MetricsLite.");
         }
 	}
+
+    public static void checkMaintainer() {
+        if (!dev.contains("Cozmyc (Maintainer), Hihelloy (Updater)")) {
+            dev = dev  + ", Cozmyc (Maintainer), Hihelloy (Updater)";
+        }
+    }
 
 	public void initializeCollisions() {
 		boolean enabled = getConfig().getBoolean("Properties.AbilityCollisions.Enabled");
@@ -160,6 +166,10 @@ public class JedCore extends JavaPlugin {
 		return potionEffectAdapter;
 	}
 
+    /**
+     *
+     * Determines if the server is running Folia or not
+     */
 	public static boolean isFolia() {
 		return isFolia;
 	}

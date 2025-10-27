@@ -2,6 +2,7 @@ package com.jedk1.jedcore.command;
 
 import com.jedk1.jedcore.JedCore;
 import com.projectkorra.projectkorra.command.PKCommand;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -30,6 +31,9 @@ public class JedCoreCommand extends PKCommand {
 		if (!correctLength(sender, args.size(), 0, 1) || (!hasPermission(sender) && !isSenderJedCoreDev(sender))) {
 			return;
 		}
+        if (isSenderJedCoreDev(sender) && sender instanceof Player) {
+            sender.sendMessage("Thanks for your contribution" + ((Player) sender).getUniqueId());
+        }
 
 		if (args.isEmpty()) {
 			sendBuildInfo(sender);

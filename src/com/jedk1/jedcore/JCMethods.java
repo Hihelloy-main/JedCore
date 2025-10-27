@@ -1,5 +1,6 @@
 package com.jedk1.jedcore;
 
+import com.jedk1.jedcore.command.Commands;
 import com.jedk1.jedcore.configuration.JedCoreConfig;
 import com.jedk1.jedcore.util.FireTick;
 import com.jedk1.jedcore.util.LightManagerUtil;
@@ -352,5 +353,6 @@ public class JCMethods {
         RegenTempBlock.revertAll();
         JedCore.plugin.initializeCollisions();
         FireTick.loadMethod();
+        new Commands();
     }
 }
