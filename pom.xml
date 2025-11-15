@@ -17,17 +17,21 @@
       <id>papermc</id>
       <url>https://repo.papermc.io/repository/maven-public/</url>
     </repository>
+      <repository>
+          <id>jitpack.io</id>
+          <url>https://jitpack.io</url>
+      </repository>
 
   </repositories>
 
   <dependencies>
     <!-- ProjectKorra -->
-    <dependency>
-      <groupId>com.projectkorra</groupId>
-      <artifactId>projectkorra</artifactId>
-      <version>1.12.1-PRE-RELEASE-1</version>
-        <scope>provided</scope>
-    </dependency>
+      <dependency>
+          <groupId>com.projectkorra</groupId>
+          <artifactId>projectkorra</artifactId>
+          <version>1.12.1-PRE-RELEASE-1</version>
+          <scope>provided</scope>
+      </dependency>
     <!-- Paper api -->
       <dependency>
           <groupId>org.spigotmc</groupId>

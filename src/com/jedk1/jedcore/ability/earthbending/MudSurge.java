@@ -323,7 +323,8 @@ public class MudSurge extends EarthAbility implements AddonAbility {
     }
 
     private void createMudPool() {
-        if (!mudAreaItr.hasNext()) {
+        // guard against a null iterator (safety) and handle empty iterator
+        if (mudAreaItr == null || !mudAreaItr.hasNext()) {
             mudFormed = true;
             return;
         }
@@ -368,16 +369,34 @@ public class MudSurge extends EarthAbility implements AddonAbility {
     }
 
     private void affect() {
-        for (TempFallingBlock tfb : TempFallingBlock.getFromAbility(this)) {
+        // Copy the collection to avoid ConcurrentModificationExceptions if the underlying collection is mutated by tfb.remove()
+        List<TempFallingBlock> tempList = new ArrayList<>(TempFallingBlock.getFromAbility(this));
+
+        for (TempFallingBlock tfb : tempList) {
             FallingBlock fb = tfb.getFallingBlock();
-            if (fb.isDead()) {
-                tfb.remove();
+            if (fb == null) {
+                // Defensive: if falling block not present, ensure TFb is removed from the original collection
+                try {
+                    tfb.remove();
+                } catch (Exception ignored) {}
                 continue;
             }
 
-            for (Entity e : GeneralMethods.getEntitiesAroundPoint(fb.getLocation(), 1.5)) {
-                if (fb.isDead()) {
+            if (fb.isDead()) {
+                // Remove from both TFb internal registration and our local tracking if needed
+                try {
                     tfb.remove();
+                } catch (Exception ignored) {}
+                continue;
+            }
+
+            // Copy entity list as well just in case another plugin modifies entities mid-iteration
+            List<Entity> entities = new ArrayList<>(GeneralMethods.getEntitiesAroundPoint(fb.getLocation(), 1.5));
+            for (Entity e : entities) {
+                if (fb.isDead()) {
+                    try {
+                        tfb.remove();
+                    } catch (Exception ignored) {}
                     continue;
                 }
                 if (RegionProtection.isRegionProtected(this, e.getLocation()) || ((e instanceof Player) && Commands.invincible.contains(e.getName()))){
@@ -403,8 +422,11 @@ public class MudSurge extends EarthAbility implements AddonAbility {
                         blind.add((Player) e);
                     }
 
+                    // Apply velocity and then remove the falling block (safe because we're iterating a copy)
                     e.setVelocity(fb.getVelocity().multiply(0.8));
-                    tfb.remove();
+                    try {
+                        tfb.remove();
+                    } catch (Exception ignored) {}
                 }
             }
         }
