@@ -7,6 +7,8 @@ This is my fork of Cozymc's fork of plushmonkey's fork of jedk1's JedCore addon 
 Download releases [here](https://github.com/Hihelloy-main/JedCore/releases).
 Join our [Discord](https://discord.gg/gh9MfDmwZm) to discuss the plugin, suggest changes, report bugs, etc.
 
+This fork attempts on adding Folia support.
+
 ## Changelog
 
 ### 2.14.4
