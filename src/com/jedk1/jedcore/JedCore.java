@@ -3,6 +3,7 @@ package com.jedk1.jedcore;
 
 import com.cjcrafter.foliascheduler.FoliaCompatibility;
 import com.cjcrafter.foliascheduler.ServerImplementation;
+import com.cjcrafter.foliascheduler.folia.FoliaRegionScheduler;
 import com.google.common.reflect.ClassPath;
 import com.jedk1.jedcore.util.*;
 import com.jedk1.jedcore.command.Commands;
@@ -81,6 +82,8 @@ public class JedCore extends JavaPlugin {
         }
 
 		JCMethods.registerDisabledWorlds();
+        // Probably not needed lmao but might as well have it
+        new PaperLib();
 		CoreAbility.registerPluginAbilities(this, "com.jedk1.jedcore.ability");
 
 		getServer().getPluginManager().registerEvents(new AbilityListener(this), this);
@@ -150,6 +153,8 @@ public class JedCore extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		RegenTempBlock.revertAll();
+        TempFallingBlock.removeAllFallingBlocks();
+        ThreadUtil.shutdown();
 	}
 
 	public static void logDebug(String message) {

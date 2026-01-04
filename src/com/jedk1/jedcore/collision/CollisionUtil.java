@@ -1,7 +1,7 @@
 package com.jedk1.jedcore.collision;
 
+import com.jedk1.jedcore.util.TempFallingBlock;
 import com.projectkorra.projectkorra.ability.util.Collision;
-import com.projectkorra.projectkorra.util.TempFallingBlock;
 import org.bukkit.Location;
 
 import java.util.Iterator;

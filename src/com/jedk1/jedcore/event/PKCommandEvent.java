@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class PKCommandEvent extends Event{
+public class PKCommandEvent extends Event {
 
 	public enum CommandType {
 		ADD,
